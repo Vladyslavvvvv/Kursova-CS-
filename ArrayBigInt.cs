@@ -35,37 +35,6 @@ namespace Kursova__CS_
             return sum;
         }
 
-        // Читання масиву чисел з файлу .txt
-        public void ReadFromFile(string filename)
-        {
-            try
-            {
-                using (StreamReader sr = new StreamReader(filename))
-                {
-                    string line = sr.ReadLine();
-                    string[] numbers = line.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries); // Розділити рядок на числа
-                    foreach (string numStr in numbers)
-                    {
-                        BigInt parsedBigInt = new BigInt(); // Створення BigInt
-                                                            // Перетворення числа у char[]
-                        char[] charArray = numStr.ToCharArray();
-
-                        // Встановлення значення за допомогою SetString
-                        parsedBigInt.SetString(charArray);
-
-                        // Встановлення розміру за допомогою SetLength
-                        parsedBigInt.SetLength(charArray.Length);
-
-                        AddBigInt(parsedBigInt);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Проблема з читанням файлу: {ex.Message}");
-            }
-        }
-
         // Запис суми у файл .txt
         public void WriteSumToFile(string filename)
         {
@@ -81,6 +50,8 @@ namespace Kursova__CS_
                     // Записуємо суму у файл
                     sw.WriteLine("Сума: " + SUM);
                 }
+
+                MessageBox.Show("Результат записон у файл");
             }
             catch (Exception ex)
             {

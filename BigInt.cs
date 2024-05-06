@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,6 +87,42 @@ namespace Kursova__CS_
             return new BigInt(sumChars, sumChars.Length);
         }
 
+        // Оператор віднімання
+        public static BigInt operator-(BigInt B1, BigInt B2)
+        {
+            int len1 = B1.GetLength();
+            int len2 = B2.GetLength();
+            int maxLength = Math.Max(len1, len2);
+
+            int[] result = new int[maxLength];
+
+            int borrow = 0;
+            for (int i = 0; i < maxLength; i++)
+            {
+                int digit1 = (i < len1) ? B1.str[len1 - 1 - i] - '0' : 0;
+                int digit2 = (i < len2) ? B2.str[len2 - 1 - i] - '0' : 0;
+
+                int diff = digit1 - digit2 - borrow;
+                if (diff < 0)
+                {
+                    diff += 10;
+                    borrow = 1;
+                }
+                else
+                {
+                    borrow = 0;
+                }
+
+                result[maxLength - 1 - i] = diff;
+            }
+
+            string diffStr = string.Join("", result.SkipWhile(x => x == 0));
+            char[] diffChars = diffStr.ToCharArray();
+
+            return new BigInt(diffChars, diffChars.Length);
+        }
+
+
         // Оператор множення
         public static BigInt operator*(BigInt B1, BigInt B2)
         {
@@ -122,6 +159,34 @@ namespace Kursova__CS_
 
             char[] multiplyChars = multiplyStr.ToCharArray();
             return new BigInt(multiplyChars, multiplyChars.Length);
+        }
+
+        // Оператор ділення
+        public static BigInt operator/(BigInt B1, BigInt B2)
+        {
+            // Ініціалізація результату ділення як нульове BigInt
+            char[] b1 = new char[1];
+            b1[0] = '0';
+            BigInt result = new BigInt(b1, 1);
+
+            char[] b2 = new char[1];
+            b2[0] = '1';
+            BigInt quotient = new BigInt(b2, 1);
+
+            // Копія діленого, яку будемо змінювати
+            BigInt dividend = new BigInt(B1);
+
+            // Поки ділене більше або дорівнює дільнику
+            while (dividend > B2)
+            {
+                dividend = dividend - B2; // Віднімаємо дільник від діленого
+                result = result + quotient; // Інкрементуємо результат
+            }
+
+            result = result + quotient;
+
+            // Повернення результату ділення
+            return result;
         }
 
         // Оператор більше
